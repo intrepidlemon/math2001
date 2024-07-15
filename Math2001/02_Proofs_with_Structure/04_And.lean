@@ -17,7 +17,7 @@ example {p : ℚ} (hp : p ^ 2 ≤ 8) : p ≥ -5 := by
   have hp' : -3 ≤ p ∧ p ≤ 3
   · apply abs_le_of_sq_le_sq'
     calc
-      p ^ 2 <= 9 := by addarith [hp]
+      p ^ 2 ≤ 9 := by addarith [hp]
       _ = 3 ^ 2 := by numbers
     numbers
   sorry

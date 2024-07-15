@@ -23,12 +23,12 @@ example {m n : ℤ} (h1 : m + 3 ≤ 2 * n - 1) (h2 : n ≤ 5) : m ≤ 6 := by
 
 
 example {r s : ℚ} (h1 : s + 3 ≥ r) (h2 : s + r ≤ 3) : r ≤ 3 := by
-  have h3 : r ≤ 3 + s := by sorry -- justify with one tactic
-  have h4 : r ≤ 3 - s := by sorry -- justify with one tactic
+  have h3 : r ≤ 3 + s := by addarith [h1]
+  have h4 : r ≤ 3 - s := by addarith [h2]
   calc
-    r = (r + r) / 2 := by sorry -- justify with one tactic
-    _ ≤ (3 - s + (3 + s)) / 2 := by sorry -- justify with one tactic
-    _ = 3 := by sorry -- justify with one tactic
+    r = (r + r) / 2 := by ring
+    _ ≤ (3 - s + (3 + s)) / 2 := by rel [h3, h4]
+    _ = 3 := by ring
 
 example {t : ℝ} (h1 : t ^ 2 = 3 * t) (h2 : t ≥ 1) : t ≥ 2 := by
   have h3 :=
@@ -48,7 +48,11 @@ example {a b : ℝ} (h1 : a ^ 2 = b ^ 2 + 1) (h2 : a ≥ 0) : a ≥ 1 := by
 
 
 example {x y : ℤ} (hx : x + 3 ≤ 2) (hy : y + 2 * x ≥ 3) : y > 3 := by
-  sorry
+  have h1 : x ≤ -1 := by addarith [hx]
+  calc
+    y ≥ 3 - 2 * x := by addarith [hy]
+    _ ≥ 3 - 2 * -1 := by rel [h1]
+    _ > 3 := by numbers
 
 example (a b : ℝ) (h1 : -b ≤ a) (h2 : a ≤ b) : a ^ 2 ≤ b ^ 2 := by
   sorry
