@@ -22,7 +22,11 @@ example {n : ℕ} : n ^ 2 ≠ 2 := by
   calc
     n ^ 2 ≤ 1 ^ 2 := by rel [hn]
     _ < 2 := by numbers
-  sorry
+  apply ne_of_gt
+  calc
+    n ^ 2 ≥ 2 ^ 2 := by rel [hn]
+    _ = 4 := by ring
+    _ > 2 := by numbers
 
 example {x : ℝ} (hx : 2 * x + 1 = 5) : x = 1 ∨ x = 2 := by
   right
