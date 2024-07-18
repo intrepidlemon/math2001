@@ -35,14 +35,24 @@ example {x : ℝ} (hx : 2 * x + 1 = 5) : x = 1 ∨ x = 2 := by
     _ = (5 - 1) / 2 := by rw [hx]
     _ = 2 := by numbers
 
-
+/-- example 2.3.4 -/
 example {x : ℝ} (hx : x ^ 2 - 3 * x + 2 = 0) : x = 1 ∨ x = 2 := by
   have h1 :=
     calc
     (x - 1) * (x - 2) = x ^ 2 - 3 * x + 2 := by ring
     _ = 0 := by rw [hx]
   have h2 := eq_zero_or_eq_zero_of_mul_eq_zero h1
-  sorry
+  obtain h2 | h2 := h2
+  left
+  calc
+    x = (x - 1) + 1 := by ring
+    _ = 0 + 1 := by rw [h2]
+    _ = 1 := by numbers
+  right
+  calc
+    x = (x - 2) + 2 := by ring
+    _ = 0 + 2 := by rw [h2]
+    _ = 2 := by numbers
 
 example {n : ℤ} : n ^ 2 ≠ 2 := by
   have hn0 := le_or_succ_le n 0
@@ -102,8 +112,23 @@ example {x : ℝ} (hx : x ^ 2 + 2 * x - 3 = 0) : x = -3 ∨ x = 1 := by
 example {a b : ℝ} (hab : a ^ 2 + 2 * b ^ 2 = 3 * a * b) : a = b ∨ a = 2 * b := by
   sorry
 
+/-- exercise 10 -/
 example {t : ℝ} (ht : t ^ 3 = t ^ 2) : t = 1 ∨ t = 0 := by
-  sorry
+  have h1 :=
+    calc
+    (t - 1) * (t * t) = t ^ 3 - t ^ 2 := by ring
+    _ = t ^ 3 - t ^ 3 := by rw [ht]
+    _ = 0 := by ring
+  obtain h2 | h3 := eq_zero_or_eq_zero_of_mul_eq_zero h1
+  · left
+    calc
+      t = (t - 1) + 1 := by ring
+      _ = 0 + 1 := by rw [h2]
+      _ = 1 := by numbers
+  · right
+    obtain h4 | h5 := eq_zero_or_eq_zero_of_mul_eq_zero h3
+    exact h4
+    exact h5
 
 example {n : ℕ} : n ^ 2 ≠ 7 := by
   sorry

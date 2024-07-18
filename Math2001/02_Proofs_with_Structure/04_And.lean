@@ -20,8 +20,10 @@ example {p : ℚ} (hp : p ^ 2 ≤ 8) : p ≥ -5 := by
       p ^ 2 ≤ 9 := by addarith [hp]
       _ = 3 ^ 2 := by numbers
     numbers
-  sorry
-
+  obtain ⟨h1, h2⟩ := hp'
+  calc
+    p ≥ -3 := by rel [h1]
+    _ ≥ -5 := by numbers
 
 example {a b : ℝ} (h1 : a - 5 * b = 4) (h2 : b + 2 = 3) : a = 9 ∧ b = 1 := by
   constructor
@@ -50,7 +52,15 @@ example {a b : ℝ} (h1 : a ^ 2 + b ^ 2 = 0) : a = 0 ∧ b = 0 := by
       a ^ 2 ≤ a ^ 2 + b ^ 2 := by extra
       _ = 0 := by rw [h1]
     extra
-  sorry
+  have h3 : b ^ 2 = 0
+  · apply le_antisymm
+    calc
+      b ^ 2 ≤ a ^ 2 + b ^ 2 := by extra
+      _ = 0 := by rw [h1]
+    extra
+  constructor
+  · cancel 2 at h2
+  · cancel 2 at h3
 
 /-! # Exercises -/
 
@@ -75,4 +85,30 @@ example {x y : ℚ} (h : x + y = 5 ∧ x + 2 * y = 7) : x = 3 ∧ y = 2 := by
 
 example {a b : ℝ} (h1 : a * b = a) (h2 : a * b = b) :
     a = 0 ∧ b = 0 ∨ a = 1 ∧ b = 1 := by
-  sorry
+    have h3: a = b
+    · calc
+      a = a * b := by rw [h1]
+      _ = b := by rw [h2]
+    have h4: a * (1 - a) = 0
+    · calc
+      a * (1 - a) = a - a * a := by ring
+      _ = a - a * b := by rw[h3]
+      _ = a - a := by rw [h1]
+      _ = 0 := by ring
+    obtain h5 | h6 := eq_zero_or_eq_zero_of_mul_eq_zero h4
+    left
+    constructor
+    exact h5
+    · calc
+      b = a := by rw [h3]
+      _ = 0 := by rw [h5]
+    right
+    have h7 : a = 1
+    . calc
+      a = a + 0 := by ring
+      _ = 1 := by addarith [h6]
+    constructor
+    exact h7
+    . calc
+      b = a := by rw [h3]
+      _ = 1 := by rw [h7]
