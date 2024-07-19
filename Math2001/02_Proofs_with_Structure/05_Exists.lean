@@ -4,13 +4,11 @@ import Library.Basic
 
 math2001_init
 
-
 example {a : ℚ} (h : ∃ b : ℚ, a = b ^ 2 + 1) : a > 0 := by
   obtain ⟨b, hb⟩ := h
   calc
     a = b ^ 2 + 1 := hb
     _ > 0 := by extra
-
 
 example {t : ℝ} (h : ∃ a : ℝ, a * t < 0) : t ≠ 0 := by
   obtain ⟨x, hxt⟩ := h
@@ -21,20 +19,26 @@ example {t : ℝ} (h : ∃ a : ℝ, a * t < 0) : t ≠ 0 := by
     cancel -x at hxt'
     apply ne_of_gt
     apply hxt'
-  · sorry
+  · apply ne_of_lt
+    have h1: x * t < x * 0
+    · calc
+      x * t < 0 := by rel [hxt]
+      _ = 0 * 0 := by ring
+      _ = x * 0 := by ring
+    cancel x at h1
 
 example : ∃ n : ℤ, 12 * n = 84 := by
   use 7
   numbers
 
-
 example (x : ℝ) : ∃ y : ℝ, y > x := by
   use x + 1
   extra
 
-
 example : ∃ m n : ℤ, m ^ 2 - n ^ 2 = 11 := by
-  sorry
+  use 6
+  use 5
+  numbers
 
 example (a : ℤ) : ∃ m n : ℤ, m ^ 2 - n ^ 2 = 2 * a + 1 := by
   sorry
