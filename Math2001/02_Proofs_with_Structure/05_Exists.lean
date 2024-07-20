@@ -41,10 +41,25 @@ example : ∃ m n : ℤ, m ^ 2 - n ^ 2 = 11 := by
   numbers
 
 example (a : ℤ) : ∃ m n : ℤ, m ^ 2 - n ^ 2 = 2 * a + 1 := by
-  sorry
+  have h1: (a + 1) ^ 2 - a ^ 2 = 2 * a + 1 := by ring
+  use a + 1
+  use a
+  apply h1
 
 example {p q : ℝ} (h : p < q) : ∃ x, p < x ∧ x < q := by
-  sorry
+  have h1: p < (p + q) / 2 := by
+    calc
+      p = (p + p) / 2 := by ring
+      _ < (p + q) / 2 := by rel [h]
+  have h2: q > (p + q) / 2 := by
+    calc
+      q = (q + q) / 2 := by ring
+      _ > (p + q) / 2 := by rel [h]
+  use (p + q) / 2
+  constructor
+  apply h1
+  apply h2
+
 
 example : ∃ a b c d : ℕ,
     a ^ 3 + b ^ 3 = 1729 ∧ c ^ 3 + d ^ 3 = 1729 ∧ a ≠ c ∧ a ≠ d := by
