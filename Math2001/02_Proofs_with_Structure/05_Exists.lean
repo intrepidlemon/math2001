@@ -40,11 +40,13 @@ example : ∃ m n : ℤ, m ^ 2 - n ^ 2 = 11 := by
   use 5
   numbers
 
+
 example (a : ℤ) : ∃ m n : ℤ, m ^ 2 - n ^ 2 = 2 * a + 1 := by
   have h1: (a + 1) ^ 2 - a ^ 2 = 2 * a + 1 := by ring
   use a + 1
   use a
   apply h1
+
 
 example {p q : ℝ} (h : p < q) : ∃ x, p < x ∧ x < q := by
   have h1: p < (p + q) / 2 := by
@@ -60,7 +62,6 @@ example {p q : ℝ} (h : p < q) : ∃ x, p < x ∧ x < q := by
   apply h1
   apply h2
 
-
 example : ∃ a b c d : ℕ,
     a ^ 3 + b ^ 3 = 1729 ∧ c ^ 3 + d ^ 3 = 1729 ∧ a ≠ c ∧ a ≠ d := by
   use 1, 12, 9, 10
@@ -74,9 +75,10 @@ example : ∃ a b c d : ℕ,
 
 /-! # Exercises -/
 
-
 example : ∃ t : ℚ, t ^ 2 = 1.69 := by
-  sorry
+  use 1.3
+  numbers
+
 example : ∃ m n : ℤ, m ^ 2 + n ^ 2 = 85 := by
   sorry
 
@@ -99,4 +101,23 @@ example {n : ℤ} : ∃ a, 2 * a ^ 3 ≥ n * a + 7 := by
 
 example {a b c : ℝ} (ha : a ≤ b + c) (hb : b ≤ a + c) (hc : c ≤ a + b) :
     ∃ x y z, x ≥ 0 ∧ y ≥ 0 ∧ z ≥ 0 ∧ a = y + z ∧ b = x + z ∧ c = x + y := by
-  sorry
+    use ((b + c) - a) / 2
+    use ((a + c) - b) / 2
+    use ((a + b) - c) / 2
+    constructor
+    calc
+      (b + c - a) / 2 ≥ (a - a) / 2 := by rel [ha]
+      _ = 0 := by ring
+    constructor
+    calc
+      (a + c - b) / 2 ≥ (b - b) / 2 := by rel [hb]
+      _ = 0 := by ring
+    constructor
+    calc
+      (a + b - c) / 2 ≥ (c - c) / 2 := by rel [hc]
+      _ = 0 := by ring
+    constructor
+    ring
+    constructor
+    ring
+    ring

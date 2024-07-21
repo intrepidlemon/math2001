@@ -13,19 +13,28 @@ example : Odd (7 : ℤ) := by
 
 
 example : Odd (-3 : ℤ) := by
-  sorry
+  dsimp [Odd]
+  use -2
+  numbers
+
 
 example {n : ℤ} (hn : Odd n) : Odd (3 * n + 2) := by
-  dsimp [Odd] at *
+  dsimp [Odd]
   obtain ⟨k, hk⟩ := hn
   use 3 * k + 2
   calc
     3 * n + 2 = 3 * (2 * k + 1) + 2 := by rw [hk]
     _ = 2 * (3 * k + 2) + 1 := by ring
 
-
 example {n : ℤ} (hn : Odd n) : Odd (7 * n - 4) := by
-  sorry
+  dsimp [Odd]
+  obtain ⟨q, hk⟩ := hn
+  use (7 * q + 1)
+  calc
+    7 * n - 4 = 7 * (2 * q + 1) - 4 := by rw [hk]
+    _ = 14 * q + 3 := by ring
+    _ = 14 * q + 2 - 2 + 3 := by ring
+    _ = 2 * (7 * q + 1) + 1 := by ring
 
 example {x y : ℤ} (hx : Odd x) (hy : Odd y) : Odd (x + y + 1) := by
   obtain ⟨a, ha⟩ := hx
@@ -37,7 +46,12 @@ example {x y : ℤ} (hx : Odd x) (hy : Odd y) : Odd (x + y + 1) := by
 
 
 example {x y : ℤ} (hx : Odd x) (hy : Odd y) : Odd (x * y + 2 * y) := by
-  sorry
+  obtain ⟨a, ha⟩ := hx
+  obtain ⟨b, hb⟩ := hy
+  use 2 * a * b + 3 * b + a + 1
+  calc
+    x * y + 2 * y = (2 * a + 1) * (2 * b + 1) + 2 * (2 * b + 1) := by rw [ha, hb]
+    _ = 2 * (2 * a * b + 3 * b + a + 1) + 1 := by ring
 
 example {m : ℤ} (hm : Odd m) : Even (3 * m - 5) := by
   sorry
