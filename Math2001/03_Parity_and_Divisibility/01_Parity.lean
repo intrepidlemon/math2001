@@ -44,7 +44,6 @@ example {x y : ℤ} (hx : Odd x) (hy : Odd y) : Odd (x + y + 1) := by
     x + y + 1 = 2 * a + 1 + (2 * b + 1) + 1 := by rw [ha, hb]
     _ = 2 * (a + b + 1) + 1 := by ring
 
-
 example {x y : ℤ} (hx : Odd x) (hy : Odd y) : Odd (x * y + 2 * y) := by
   obtain ⟨a, ha⟩ := hx
   obtain ⟨b, hb⟩ := hy
@@ -53,11 +52,32 @@ example {x y : ℤ} (hx : Odd x) (hy : Odd y) : Odd (x * y + 2 * y) := by
     x * y + 2 * y = (2 * a + 1) * (2 * b + 1) + 2 * (2 * b + 1) := by rw [ha, hb]
     _ = 2 * (2 * a * b + 3 * b + a + 1) + 1 := by ring
 
+example {x y : ℤ} (hx : Odd x) (hy : Odd y) : Odd (x * y) := by
+  obtain ⟨a, ha⟩ := hx
+  obtain ⟨b, hb⟩ := hy
+  use 2 * a * b + a + b
+  calc
+    x * y = (2 * a + 1) * (2 * b + 1) := by rw [ha, hb]
+    _ = 4 * a * b + 2 * a + 2 * b + 1 := by ring
+    _ = 2 * (2 * a * b + a + b) + 1 := by ring
+
 example {m : ℤ} (hm : Odd m) : Even (3 * m - 5) := by
-  sorry
+  dsimp [Even]
+  obtain ⟨a, ha⟩ := hm
+  use (3 * a - 1)
+  calc
+    3 * m - 5 = 3 * (2 * a + 1) - 5 := by rw [ha]
+    _ = 6 * a + 3 - 5 := by ring
+    _ = 6 * a - 2 := by ring
+    _ = 2 * (3 * a - 1) := by ring
 
 example {n : ℤ} (hn : Even n) : Odd (n ^ 2 + 2 * n - 5) := by
-  sorry
+  obtain ⟨a, ha⟩ := hn
+  use 2 * a ^ 2 + 2 * a - 3
+  calc
+    n ^ 2 + 2 * n - 5 = (2 * a) ^ 2 + 2 * (2 * a) - 5 := by rw [ha]
+    _ = 4 * a ^ 2 + 4 * a - 6 + 1 := by ring
+    _ = 2 * (2 * a ^ 2 + 2 * a - 3) + 1 := by ring
 
 example (n : ℤ) : Even (n ^ 2 + n + 4) := by
   obtain hn | hn := Int.even_or_odd n
@@ -113,5 +133,54 @@ example (n : ℤ) : Odd (3 * n ^ 2 + 3 * n - 1) := by
 
 example (n : ℤ) : ∃ m ≥ n, Odd m := by
   sorry
+
 example (a b c : ℤ) : Even (a - b) ∨ Even (a + c) ∨ Even (b - c) := by
-  sorry
+  obtain ha | ha := Int.even_or_odd a
+  · obtain ⟨x, hx⟩ := ha
+    obtain hb | hb := Int.even_or_odd b
+    · obtain ⟨y, hy⟩ := hb
+      left
+      use (x - y)
+      calc
+        a - b = 2 * x - 2 * y := by rw [hx, hy]
+        _ = 2 * (x - y) := by ring
+    · obtain ⟨y, hy⟩ := hb
+      obtain hc | hc := Int.even_or_odd c
+      · obtain ⟨z, hz⟩ := hc
+        right
+        left
+        use x + z
+        calc
+          a + c = (2 * x) + (2 * z) := by rw [hx, hz]
+          _ = 2 * (x + z) := by ring
+      · obtain ⟨z, hz⟩ := hc
+        right
+        right
+        use y - z
+        calc
+          b - c = (2 * y + 1) - (2 * z + 1) := by rw [hy, hz]
+          _ = 2 * (y - z) := by ring
+  · obtain ⟨x, hx⟩ := ha
+    obtain hb | hb := Int.even_or_odd b
+    · obtain ⟨y, hy⟩ := hb
+      obtain hc | hc := Int.even_or_odd c
+      · obtain ⟨z, hz⟩ := hc
+        right
+        right
+        use y - z
+        calc
+          b - c = (2 * y) - (2 * z) := by rw [hy, hz]
+          _ = 2 * (y - z) := by ring
+      · obtain ⟨z, hz⟩ := hc
+        right
+        left
+        use x + z + 1
+        calc
+          a + c = (2 * x + 1) + (2 * z + 1) := by rw [hx, hz]
+          _ = 2 * (x + z + 1) := by ring
+    · obtain ⟨y, hy⟩ := hb
+      left
+      use x - y
+      calc
+        a - b = (2 * x + 1) - (2 * y + 1) := by rw [hx, hy]
+        _ = 2 * (x - y) := by ring

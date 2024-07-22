@@ -12,7 +12,8 @@ example : (11 : ℕ) ∣ 88 := by
 
 
 example : (-2 : ℤ) ∣ 6 := by
-  sorry
+  use -3
+  numbers
 
 example {a b : ℤ} (hab : a ∣ b) : a ∣ b ^ 2 + 2 * b := by
   obtain ⟨k, hk⟩ := hab
@@ -23,7 +24,13 @@ example {a b : ℤ} (hab : a ∣ b) : a ∣ b ^ 2 + 2 * b := by
 
 
 example {a b c : ℕ} (hab : a ∣ b) (hbc : b ^ 2 ∣ c) : a ^ 2 ∣ c := by
-  sorry
+  obtain ⟨k, hk⟩ := hab
+  obtain ⟨l, hl⟩ := hbc
+  use k ^ 2 * l
+  calc
+    c = b ^ 2 * l := by rw [hl]
+    _ = (a * k) ^ 2 * l := by rw [hk]
+    _ = a ^ 2 * (k ^ 2 * l) := by ring
 
 example {x y z : ℕ} (h : x * y ∣ z) : x ∣ z := by
   sorry
@@ -51,16 +58,26 @@ example {a b : ℕ} (hb : 0 < b) (hab : a ∣ b) : a ≤ b := by
 
 
 example {a b : ℕ} (hab : a ∣ b) (hb : 0 < b) : 0 < a := by
-  sorry
+  obtain ⟨k, hk⟩ := hab
+  have H1 :=
+    calc
+      0 < b := hb
+      _ = a * k := hk
+  cancel k at H1
 
 /-! # Exercises -/
 
 
 example (t : ℤ) : t ∣ 0 := by
-  sorry
+  use 0
+  ring
 
 example : ¬(3 : ℤ) ∣ -10 := by
-  sorry
+  apply Int.not_dvd_of_exists_lt_and_lt
+  use -4
+  constructor
+  · numbers
+  · numbers
 
 example {x y : ℤ} (h : x ∣ y) : x ∣ 3 * y - 4 * y ^ 2 := by
   sorry
@@ -81,4 +98,11 @@ example : ∃ n : ℕ, 0 < n ∧ 9 ∣ 2 ^ n - 1 := by
   sorry
 
 example : ∃ a b : ℤ, 0 < b ∧ b < a ∧ a - b ∣ a + b := by
-  sorry
+  use 2
+  use 1
+  constructor
+  numbers
+  constructor
+  numbers
+  use 3
+  numbers
