@@ -15,12 +15,24 @@ example {n : ℕ} (hn : ∀ m, n ∣ m) : n = 1 := by
   have h1 : n ∣ 1 := by apply hn
   have h2 : 0 < 1 := by numbers
   apply le_antisymm
-  · apply Nat.le_of_dvd h2 h1
-  · apply Nat.pos_of_dvd_of_pos h1 h2
-
+  · apply Nat.le_of_dvd
+    apply h2
+    apply h1
+  · apply Nat.pos_of_dvd_of_pos
+    apply h1
+    apply h2
 
 example {a b : ℝ} (h : ∀ x, x ≥ a ∨ x ≤ b) : a ≤ b := by
-  sorry
+  have hab : (a + b) / 2 ≥ a ∨ (a + b) / 2 ≤ b := by apply h
+  obtain ha | hb := hab
+  . calc
+    b = 2 * ((a + b) / 2) - a := by ring
+    _ ≥ 2 * a - a := by rel [ha]
+    _ = a := by ring
+  . calc
+    a = 2 * ((a + b) / 2) - b := by ring
+    _ ≤ 2 * b - b := by rel [hb]
+    _ = b := by ring
 
 example {a b : ℝ} (ha1 : a ^ 2 ≤ 2) (hb1 : b ^ 2 ≤ 2) (ha2 : ∀ y, y ^ 2 ≤ 2 → y ≤ a)
     (hb2 : ∀ y, y ^ 2 ≤ 2 → y ≤ b) :
@@ -28,7 +40,8 @@ example {a b : ℝ} (ha1 : a ^ 2 ≤ 2) (hb1 : b ^ 2 ≤ 2) (ha2 : ∀ y, y ^ 2 
   apply le_antisymm
   · apply hb2
     apply ha1
-  · sorry
+  · apply ha2
+    apply hb1
 
 example : ∃ b : ℝ, ∀ x : ℝ, b ≤ x ^ 2 - 2 * x := by
   use -1
@@ -39,7 +52,20 @@ example : ∃ b : ℝ, ∀ x : ℝ, b ≤ x ^ 2 - 2 * x := by
 
 
 example : ∃ c : ℝ, ∀ x y, x ^ 2 + y ^ 2 ≤ 4 → x + y ≥ c := by
-  sorry
+  use -3
+  intro x y (h1: x ^ 2 + y ^ 2 ≤ 4)
+  have h2: (x + y)^2 ≤ 3 ^ 2
+  calc
+    (x + y) ^ 2 ≤ (x + y)^2 + (x - y)^2 := by extra
+    _ = 2 * (x^2 + y^2) := by ring
+    _ ≤ 2 * 4 := by rel [h1]
+    _ ≤ 3 ^ 2 := by numbers
+  have h3: (x + y) ≥ -3 ∧ (x + y) ≤ 3 := by
+    apply abs_le_of_sq_le_sq' h2
+    numbers
+  obtain ⟨h3l, h3g⟩ := h3
+  apply h3l
+
 
 example : forall_sufficiently_large n : ℤ, n ^ 3 ≥ 4 * n ^ 2 + 7 := by
   dsimp

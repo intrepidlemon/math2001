@@ -56,7 +56,10 @@ example (a b : ℤ) : (a + b) ^ 3 ≡ a ^ 3 + b ^ 3 [ZMOD 3] :=
   sorry
 
 example : ∃ a : ℤ, 4 * a ≡ 1 [ZMOD 7] := by
-  sorry
+  use 2
+  calc
+    (2:ℤ) * 4 = 1 + 1 * 7 := by numbers
+    _ ≡ 1 [ZMOD 7] := by extra
 
 example : ∃ k : ℤ, 5 * k ≡ 6 [ZMOD 8] := by
   sorry
