@@ -22,6 +22,7 @@ example {n : ℕ} (hn : ∀ m, n ∣ m) : n = 1 := by
     apply h1
     apply h2
 
+
 example {a b : ℝ} (h : ∀ x, x ≥ a ∨ x ≤ b) : a ≤ b := by
   have hab : (a + b) / 2 ≥ a ∨ (a + b) / 2 ≤ b := by apply h
   obtain ha | hb := hab
@@ -34,6 +35,7 @@ example {a b : ℝ} (h : ∀ x, x ≥ a ∨ x ≤ b) : a ≤ b := by
     _ ≤ 2 * b - b := by rel [hb]
     _ = b := by ring
 
+
 example {a b : ℝ} (ha1 : a ^ 2 ≤ 2) (hb1 : b ^ 2 ≤ 2) (ha2 : ∀ y, y ^ 2 ≤ 2 → y ≤ a)
     (hb2 : ∀ y, y ^ 2 ≤ 2 → y ≤ b) :
     a = b := by
@@ -42,6 +44,7 @@ example {a b : ℝ} (ha1 : a ^ 2 ≤ 2) (hb1 : b ^ 2 ≤ 2) (ha2 : ∀ y, y ^ 2 
     apply ha1
   · apply ha2
     apply hb1
+
 
 example : ∃ b : ℝ, ∀ x : ℝ, b ≤ x ^ 2 - 2 * x := by
   use -1
@@ -102,21 +105,59 @@ example : ¬ Prime 6 := by
 
 /-! # Exercises -/
 
+example {a : ℝ} (h : ∀ x, a ≤ x ^ 2 - 2 * x) : a ≤ -1 :=
+  calc
+    a ≤ 1 ^ 2 - 2 * 1 := by apply h
+    _ = -1 := by numbers
 
-example {a : ℚ} (h : ∀ b : ℚ, a ≥ -3 + 4 * b - b ^ 2) : a ≥ 1 :=
-  sorry
+
+example {a : ℚ} (h : ∀ b : ℚ, a ≥ -3 + 4 * b - b ^ 2) : a ≥ 1 := by
+  calc
+    a ≥ -3 + 4 * 2 - 2 ^ 2 := by apply h
+    _ = 1 := by ring
 
 example {n : ℤ} (hn : ∀ m, 1 ≤ m → m ≤ 5 → m ∣ n) : 15 ∣ n := by
-  sorry
+  have h3: 3 ∣ n := by
+    apply hn
+    numbers
+    numbers
+  have h5: 5 ∣ n := by
+    apply hn
+    numbers
+    numbers
+  obtain ⟨a, ha⟩ := h3
+  obtain ⟨b, hb⟩ := h5
+  use 2 * a - 3 * b
+  calc
+    n = 10 * n - 9 * n := by ring
+    _ = 2 * 5 * n - 3 * 3 * n := by ring
+    _ = 2 * 5 * (3 * a) - 3 * 3 * n := by rw [ha]
+    _ = 2 * 5 * (3 * a) - 3 * 3 * (5 * b) := by rw [hb]
+    _ = 15 * (2 * a - 3 * b) := by ring
 
 example : ∃ n : ℕ, ∀ m : ℕ, n ≤ m := by
+  use 1
+  intro m
   sorry
+/-- TODO later I feel like this is just a property of natural numbers... -/
 
 example : ∃ a : ℝ, ∀ b : ℝ, ∃ c : ℝ, a + b < c := by
-  sorry
+  use 0
+  intro b
+  use b + 1
+  calc
+  0 + b = b := by ring
+  _ < b + 1 := by extra
 
 example : forall_sufficiently_large x : ℝ, x ^ 3 + 3 * x ≥ 7 * x ^ 2 + 12 := by
+  dsimp
+  use 0
+  intro x hx
+
   sorry
 
 example : ¬(Prime 45) := by
-  sorry
+  apply not_prime 5 9
+  · numbers
+  · numbers
+  · numbers

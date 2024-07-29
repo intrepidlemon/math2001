@@ -21,6 +21,16 @@ example : ∃! a : ℝ, 3 * a + 1 = 7 := by
 
 
 example : ∃! x : ℚ, ∀ a, a ≥ 1 → a ≤ 3 → (a - x) ^ 2 ≤ 1 := by
+  use 2
+  dsimp
+  constructor
+  · intro y h1 h3
+    have h5: (y - 2)^2 =
+
+    rw sq_le_sq'
+
+
+
   sorry
 
 example {x : ℚ} (hx : ∃! a : ℚ, a ^ 2 = x) : x = 0 := by

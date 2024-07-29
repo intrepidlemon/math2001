@@ -6,7 +6,6 @@ math2001_init
 
 /-! # Section 1.4: Proving inequalities -/
 
-
 -- Example 1.4.1
 example {x y : ℤ} (hx : x + 3 ≤ 2) (hy : y + 2 * x ≥ 3) : y > 3 :=
   calc
