@@ -19,6 +19,8 @@ example (P Q : Prop) : P → (P ∨ ¬ Q) := by
 
 #truth_table ¬(P ∧ ¬ Q)
 
+#truth_table P ↔ (¬ P ∨ Q)
+
 
 example (P : Prop) : (P ∨ P) ↔ P := by
   constructor
@@ -81,7 +83,9 @@ example (P : α → Prop) : ¬ (∃ x, P x) ↔ ∀ x, ¬ P x := by
 
 
 example {P Q : Prop} (h : P ∧ Q) : P ∨ Q := by
-  sorry
+  obtain ⟨hp , hq⟩  := h
+  left
+  apply hp
 
 example {P Q R : Prop} (h1 : P → Q) (h2 : P → R) (h3 : P) : Q ∧ R := by
   sorry
@@ -114,10 +118,34 @@ example {P Q : α → Prop} (h : ∀ x, P x ↔ Q x) : (∃ x, P x) ↔ (∃ x, 
   sorry
 
 example (P : α → β → Prop) : (∃ x y, P x y) ↔ ∃ y x, P x y := by
-  sorry
+  constructor
+  · intro hxy
+    obtain ⟨x, y, hxy'⟩ := hxy
+    use y
+    use x
+    apply hxy'
+  · intro hxy
+    obtain ⟨y, x, hxy'⟩ := hxy
+    use x
+    use y
+    apply hxy'
 
 example (P : α → β → Prop) : (∀ x y, P x y) ↔ ∀ y x, P x y := by
   sorry
 
 example (P : α → Prop) (Q : Prop) : ((∃ x, P x) ∧ Q) ↔ ∃ x, (P x ∧ Q) := by
-  sorry
+  constructor
+  · intro hpxq
+    obtain ⟨hpx, hq⟩ := hpxq
+    obtain ⟨x, hx⟩ := hpx
+    use x
+    constructor
+    · apply hx
+    · apply hq
+  · intro hpxq
+    obtain ⟨x, hpq⟩ := hpxq
+    obtain ⟨hp, hq⟩ := hpq
+    constructor
+    · use x
+      apply hp
+    · use hq

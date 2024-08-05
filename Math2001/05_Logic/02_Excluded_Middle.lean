@@ -79,8 +79,39 @@ example {P : Prop} (hP : ¬¬P) : P := by
 
 def Tribalanced (x : ℝ) : Prop := ∀ n : ℕ, (1 + x / n) ^ n < 3
 
+theorem not_tribalanced_two : ¬ Tribalanced (0 + 1 + 1) := by
+  intro h
+  dsimp [Tribalanced] at h
+  have h1: ((1:ℝ) + ((0 + 1 + 1) / (1:ℕ))) ^ 1 < 3 := h 1
+  numbers at h1
+
+theorem tribalanced_zero : Tribalanced 0 := by
+  dsimp [Tribalanced] at *
+  intro n
+  obtain hn0 | hn1 := Nat.eq_zero_or_pos n
+  · have h1: ((1:ℝ) + (0 / (n:ℕ))) ^ n < 3 := by
+      calc
+        ((1:ℝ) + (0 / (n:ℕ))) ^ n = ((1:ℝ) + (0 / (n:ℕ))) ^ 0 := by rw [hn0]
+        _ = 1 := by ring
+        _ < 3 := by numbers
+    apply h1
+  · have h1: ((1:ℝ) + (0 / (n:ℕ))) ^ n < 3 := by
+      calc
+      ((1:ℝ) + (0 / (n:ℕ))) ^ n = (1 + 0) ^ n := by ring
+      _ = 1 := by ring
+      _ < 3 := by numbers
+    apply h1
+
 example : ∃ x : ℝ, Tribalanced x ∧ ¬ Tribalanced (x + 1) := by
-  sorry
+  by_cases h1 : Tribalanced (0 + 1)
+  · use 0 + 1
+    constructor
+    · apply h1
+    · apply not_tribalanced_two
+  · use 0
+    constructor
+    · apply tribalanced_zero
+    · apply h1
 
 example (P Q : Prop) : (¬P → ¬Q) ↔ (Q → P) := by
   sorry
