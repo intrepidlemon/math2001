@@ -27,9 +27,8 @@ def fdiv (n d : ℤ) : ℤ :=
     0
 termination_by _ n d => 2 * n - d
 
-
-#eval fmod 11 4 -- infoview displays `3`
-#eval fdiv 11 4 -- infoview displays `2`
+#eval fmod 4 100 -- infoview displays `3`
+#eval fdiv (-11) 4 -- infoview displays `2`
 
 
 theorem fmod_add_fdiv (n d : ℤ) : fmod n d + d * fdiv n d = n := by
@@ -105,9 +104,31 @@ example (a b : ℤ) (h : 0 < b) : ∃ r : ℤ, 0 ≤ r ∧ r < b ∧ a ≡ r [ZM
 
 /-! # Exercises -/
 
-
 theorem lt_fmod_of_neg (n : ℤ) {d : ℤ} (hd : d < 0) : d < fmod n d := by
-  sorry
+  rw [fmod]
+  split_ifs with h1 h2 h3 <;> push_neg at *
+  · -- case `n * d < 0`
+    have IH := lt_fmod_of_neg (n + d) hd -- inductive hypothesis
+    apply IH
+  · -- case `0 < d * (n - d)`
+    have IH := lt_fmod_of_neg (n - d) hd -- inductive hypothesis
+    apply IH
+  · -- case `n = d`
+    apply hd
+  · -- last case
+    have h4 :=
+    (calc 0 ≤ -d * (n - d) := by addarith [h2])
+    have h5 :=
+    (calc -d > 0 := by addarith [hd])
+    cancel (-d) at h4
+    apply lt_of_le_of_ne
+    · addarith [h4]
+    · have h6: d ≠ n := by
+        intro h'
+        apply h3
+        rw [h']
+      exact h6
+termination_by _ n d hd => 2 * n - d
 
 def T (n : ℤ) : ℤ :=
   if 0 < n then
@@ -117,6 +138,7 @@ def T (n : ℤ) : ℤ :=
   else
     0
 termination_by T n => 3 * n - 1
+
 
 theorem T_eq (n : ℤ) : T n = n ^ 2 := by
   sorry

@@ -7,13 +7,11 @@ math2001_init
 open Nat
 
 
-
 def pascal : ℕ → ℕ → ℕ
   | a, 0 => 1
   | 0, b + 1 => 1
   | a + 1, b + 1 => pascal (a + 1) b + pascal a (b + 1)
 termination_by _ a b => a + b
-
 
 #eval pascal 2 4 -- infoview displays `15`
 

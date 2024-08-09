@@ -41,9 +41,7 @@ def gcd (a b : ℤ) : ℤ :=
     -a
 termination_by _ a b => b
 
-
-#eval gcd (-21) 15 -- infoview displays `3`
-
+#eval gcd (-21) 10 -- infoview displays `3`
 
 theorem gcd_nonneg (a b : ℤ) : 0 ≤ gcd a b := by
   rw [gcd]
@@ -69,29 +67,59 @@ theorem gcd_dvd (a b : ℤ) : gcd a b ∣ b ∧ gcd a b ∣ a := by
     obtain ⟨IH_right, IH_left⟩ := IH
     constructor
     · -- prove that `gcd a b ∣ b`
-      sorry
+      exact IH_left
     · -- prove that `gcd a b ∣ a`
-      sorry
+      have H : fmod a b + b * fdiv a b = a := fmod_add_fdiv a b
+      set q := fdiv a b
+      set r := fmod a b
+      obtain ⟨k, hk⟩ := IH_left
+      obtain ⟨l, hl⟩ := IH_right
+      use (l + k * q)
+      calc
+        a = r + b * q := by rw [H]
+        _ = gcd b r * l + (gcd b r * k) * q := by rw [← hk, ← hl]
+        _ = gcd b r * (l + k * q) := by ring
   · -- case `b < 0`
     have IH : _ ∧ _ := gcd_dvd b (fmod a (-b)) -- inductive hypothesis
     obtain ⟨IH_right, IH_left⟩ := IH
     constructor
     · -- prove that `gcd a b ∣ b`
-      sorry
+      obtain ⟨k, hk⟩ := IH_left
+      set q := fdiv a (-b)
+      set r := fmod a (-b)
+      use k
+      exact hk
     · -- prove that `gcd a b ∣ a`
-      sorry
+      obtain ⟨k, hk⟩ := IH_left
+      obtain ⟨l, hl⟩ := IH_right
+      have H := fmod_add_fdiv a (-b)
+      set q := fdiv a (-b)
+      set r := fmod a (-b)
+      use l - k * q
+      calc a = r + (-b) * q := by rw [H]
+        _ = gcd b r * l + (- (gcd b r * k)) * q := by rw [← hk, ← hl]
+        _ = gcd b r * (l - k * q) := by ring
   · -- case `b = 0`, `0 ≤ a`
     constructor
-    · -- prove that `gcd a b ∣ b`
-      sorry
-    · -- prove that `gcd a b ∣ a`
-      sorry
+    · have h3: b = 0 := le_antisymm h1 h2
+      use 0
+      calc
+        b = 0 := by rw [h3]
+        _ = a * 0 := by ring
+    ·
+      use 1
+      ring
   · -- case `b = 0`, `a < 0`
     constructor
-    · -- prove that `gcd a b ∣ b`
-      sorry
-    · -- prove that `gcd a b ∣ a`
-      sorry
+    ·
+      have h3: b = 0 := le_antisymm h1 h2
+      use 0
+      calc
+        b = 0 := by rw [h3]
+        _ = -a * 0 := by ring
+    ·
+      use -1
+      ring
 termination_by gcd_dvd a b => b
 
 
