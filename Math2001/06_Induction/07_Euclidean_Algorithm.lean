@@ -142,6 +142,7 @@ theorem gcd_dvd_right (a b : ℤ) : gcd a b ∣ b := by
     calc b = 0 := hb
       _ = -a * 0 := by ring
 
+
 theorem gcd_dvd_left (a b : ℤ) : gcd a b ∣ a := by
   rw [gcd]
   split_ifs with h1 h2 <;> push_neg at *
@@ -247,6 +248,12 @@ theorem bezout (a b : ℤ) : ∃ x y : ℤ, x * a + y * b = gcd a b := by
 
 /-! # Exercises -/
 
-
 theorem gcd_maximal {d a b : ℤ} (ha : d ∣ a) (hb : d ∣ b) : d ∣ gcd a b := by
-  sorry
+  have ⟨x, y, h1⟩  := bezout a b
+  have ⟨k, hk⟩ := ha
+  have ⟨l, hl⟩ := hb
+  use (x * k + y * l)
+  calc
+    gcd a b = x * a + y * b := by rw [h1]
+    _ = x * (d * k) + y * (d * l) := by rw [hk, hl]
+    _ = d * (x * k + y * l) := by ring

@@ -4,7 +4,6 @@ import Library.Theory.GCD
 
 math2001_init
 
-
 theorem gauss_lemma {d a b : ℤ} (h1 : d ∣ a * b) (h2 : gcd a d = 1) : d ∣ b := by
   obtain ⟨x, y, h⟩ := bezout a d
   obtain ⟨z, hz⟩ := h1
