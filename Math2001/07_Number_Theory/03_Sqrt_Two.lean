@@ -39,13 +39,11 @@ theorem irrat_aux (a b : ℕ) (hb : b ≠ 0) : a ^ 2 ≠ 2 * b ^ 2 := by
   contradiction
 termination_by _ => b
 
-
 example : ¬ ∃ a b : ℕ, b ≠ 0 ∧ a ^ 2 = 2 * b ^ 2 := by
   intro h
   obtain ⟨a, b, hb, hab⟩ := h
   have := irrat_aux a b hb
   contradiction
-
 
 example : ¬ ∃ a b : ℤ, b ≠ 0 ∧ b ^ 2 = 2 * a ^ 2 := by
   intro h
