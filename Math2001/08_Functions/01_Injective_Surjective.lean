@@ -346,7 +346,18 @@ example : ¬ ∀ c : ℝ, Surjective (fun x ↦ c * x) := by
   sorry
 
 example {f : ℚ → ℚ} (hf : ∀ x y, x < y → f x < f y) : Injective f := by
-  sorry
+  dsimp[Injective]
+  intro a b
+  by_cases h: f a = f b → a = b
+  · exact h
+  · push_neg at h
+    have ⟨ ha, hneq ⟩ := h
+    obtain hl | he | hg := lt_trichotomy a b
+    · have key: f a ≠ f b := ne_of_lt (hf a b hl)
+      contradiction
+    · contradiction
+    · have key: f a ≠ f b := Ne.symm (ne_of_lt (hf b a hg))
+      contradiction
 
 example {f : X → ℕ} {x0 : X} (h0 : f x0 = 0) {i : X → X}
     (hi : ∀ x, f (i x) = f x + 1) : Surjective f := by
