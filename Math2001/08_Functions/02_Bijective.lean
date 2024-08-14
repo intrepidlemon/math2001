@@ -26,7 +26,6 @@ example : Bijective p := by
       _ = y := by ring
 
 
-
 def a (t : ℝ) : ℝ := t ^ 3 - t
 
 example : ¬ Bijective a := by
@@ -127,9 +126,18 @@ example : ∀ f : Celestial → Celestial, Injective f → Bijective f := by
       apply h_sun
     · use moon
       apply h_moon
-  | moon, sun => sorry
-  | moon, moon => sorry
-
+  | moon, sun =>
+    intro y
+    cases y
+    · use moon
+      apply h_moon
+    · use sun
+      apply h_sun
+  | moon, moon =>
+    have : moon = sun
+    · apply hf
+      rw [h_sun, h_moon]
+    contradiction
 
 example : ¬ ∀ f : ℕ → ℕ, Injective f → Bijective f := by
   push_neg

@@ -131,15 +131,14 @@ def b : Humour → Humour
   | sanguine => sanguine
 
 def c : Humour → Humour
-  | melancholic => sorry
-  | choleric => sorry
-  | phlegmatic => sorry
-  | sanguine => sorry
+  | melancholic => sanguine
+  | choleric => phlegmatic
+  | phlegmatic => melancholic
+  | sanguine => phlegmatic
 
 example : b ∘ a = c := by
   ext x
   cases x <;> exhaust
-
 
 def u (x : ℝ) : ℝ := 5 * x + 1
 
@@ -154,14 +153,32 @@ example {f : X → Y} (hf : Injective f) {g : Y → Z} (hg : Injective g) :
 
 example {f : X → Y} (hf : Surjective f) {g : Y → Z} (hg : Surjective g) :
     Surjective (g ∘ f) := by
-  sorry
+  dsimp[Surjective] at *
+  intro b
+  obtain ⟨c, hc⟩ := hg b
+  obtain ⟨d, hd⟩ := hf c
+  use d
+  calc
+    g (f d) = g c := by rw [hd]
+    _ = b := by rw [hc]
 
 example {f : X → Y} (hf : Surjective f) : ∃ g : Y → X, f ∘ g = id := by
-  sorry
+  dsimp[Surjective] at hf
+  choose g hg using hf
+  use g
+  ext y
+  apply hg
 
 example {f : X → Y} {g : Y → X} (h : Inverse f g) : Inverse g f := by
   sorry
 
 example {f : X → Y} {g1 g2 : Y → X} (h1 : Inverse f g1) (h2 : Inverse f g2) :
     g1 = g2 := by
-  sorry
+  have ⟨hf1, hb1⟩ := h1
+  have ⟨hf2, hb2⟩ := h2
+  calc
+    g1 = g1 ∘ id := by rfl
+    _ = g1 ∘ (f ∘ g2) := by rw[hb2]
+    _ = (g1 ∘ f) ∘ g2 := by rfl
+    _ = id ∘ g2 := by rw[hf1]
+    _ = g2 := by rfl
