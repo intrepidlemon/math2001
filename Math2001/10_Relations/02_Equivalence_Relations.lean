@@ -115,9 +115,7 @@ example : Transitive (· ∼ ·) := by
     _ = (e * D) * B := by rw [h2]
     _ = D * (e * B) := by ring
   cancel D at this
-
 end
-
 
 section
 
@@ -161,21 +159,53 @@ example : Transitive (· ∼ ·) := by
     · apply hf1b
 
 end
-/-! # Exercises -/
 
+/-! # Exercises -/
 
 section
 local infix:50 "∼" => fun (a b : ℤ) ↦ ∃ m n, m > 0 ∧ n > 0 ∧ a * m = b * n
 
 example : Reflexive (· ∼ ·) := by
-  sorry
+  dsimp[Reflexive]
+  intro x
+  use 1, 1
+  constructor
+  · numbers
+  · constructor
+    · numbers
+    · ring
 
 example : Symmetric (· ∼ ·) := by
-  sorry
+  dsimp[Symmetric]
+  intro x y hm
+  obtain ⟨m, n, ⟨hm, hn, hxmyn⟩⟩ := hm
+  use n, m
+  constructor
+  · apply hn
+  · constructor
+    · apply hm
+    · rw[hxmyn]
 
 example : Transitive (· ∼ ·) := by
-  sorry
-
+  dsimp[Transitive]
+  intro x y z hxy hyz
+  obtain ⟨m1, n1, ⟨hm1, hn1, hxy⟩⟩ := hxy
+  obtain ⟨m2, n2, ⟨hm2, hn2, hyz⟩⟩ := hyz
+  use (m1 * m2), (n1 * n2)
+  constructor
+  · apply Int.mul_pos
+    apply hm1
+    apply hm2
+  . constructor
+    · apply Int.mul_pos
+      apply hn1
+      apply hn2
+    · calc
+      x * (m1 * m2) = x * m1 * m2 := by ring
+      _ = y * n1 * m2 := by rw [hxy]
+      _ = y * m2 * n1 := by ring
+      _ = z * n2 * n1 := by rw[hyz]
+      _ = z * (n1 * n2) := by ring
 end
 
 
@@ -183,16 +213,23 @@ section
 local infix:50 "∼" => fun ((a, b) : ℕ × ℕ) (c, d) ↦ a + d = b + c
 
 example : Reflexive (· ∼ ·) := by
-  sorry
+  dsimp[Reflexive]
+  intro x
+  ring
 
 example : Symmetric (· ∼ ·) := by
-  sorry
+  dsimp[Symmetric]
+  intro x y hxy
+  calc
+    y.1 + x.2 = x.2 + y.1 := by ring
+    _ = x.1 + y.2 := by rw[hxy]
+    _ = y.2 + x.1 := by ring
 
 example : Transitive (· ∼ ·) := by
-  sorry
-
+  dsimp[Transitive]
+  intro x y z hxy hyz
+  addarith[hxy, hyz]
 end
-
 
 section
 local infix:50 "∼" => fun ((a, b) : ℤ × ℤ) (c, d) ↦
