@@ -37,7 +37,7 @@ example : {a : ℕ | 4 ∣ a} ⊆ {b : ℕ | 2 ∣ b} := by
 example : {x : ℝ | 0 ≤ x ^ 2} ⊈ {t : ℝ | 0 ≤ t} := by
   dsimp [Set.subset_def]
   push_neg
-  use -3
+  use -1
   constructor
   · numbers
   · numbers
@@ -183,7 +183,6 @@ example : {m : ℤ | m ≥ 10} ⊆ {n : ℤ | n ^ 3 - 7 * n ^ 2 ≥ 4 * n} := by
 example : {m : ℤ | m ≥ 10} ⊈ {n : ℤ | n ^ 3 - 7 * n ^ 2 ≥ 4 * n} := by
   sorry
 
-
 namespace Int
 example : {n : ℤ | Even n} = {a : ℤ | a ≡ 6 [ZMOD 2]} := by
   sorry
@@ -211,7 +210,6 @@ example : {k : ℤ | 7 ∣ 9 * k} = {l : ℤ | 7 ∣ l} := by
 example : {k : ℤ | 7 ∣ 9 * k} ≠ {l : ℤ | 7 ∣ l} := by
   sorry
 
-
 example : {1, 2, 3} = {1, 2} := by
   sorry
 
@@ -219,4 +217,24 @@ example : {1, 2, 3} ≠ {1, 2} := by
   sorry
 
 example : {x : ℝ | x ^ 2 + 3 * x + 2 = 0} = {-1, -2} := by
-  sorry
+  ext x
+  dsimp
+  constructor
+  · intro h
+    have h1 := calc
+      (x + 1) * (x + 2) = x^2 + 3*x + 2 := by ring
+      _ = 0 := by rw[h]
+    rw [mul_eq_zero] at h1
+    obtain h1 | h2 := h1
+    · left
+      addarith[h1]
+    · right
+      addarith[h2]
+  · intro h
+    obtain h1 | h2 := h
+    calc
+      x ^ 2 + 3 * x + 2 = (-1) ^ 2 + 3 * (-1) + 2 := by rw[h1]
+      _ = 0 := by ring
+    calc
+      x ^ 2 + 3 * x + 2 = (-2) ^ 2 + 3 * (-2) + 2 := by rw[h2]
+      _ = 0 := by ring

@@ -171,16 +171,27 @@ end
 
 
 example : ¬ Symmetric ((·:ℝ) < ·) := by
-  sorry
+  dsimp[Symmetric]
+  push_neg
+  use 0, 1
+  constructor
+  · numbers
+  · numbers
 
 section
 local infix:50 "∼" => fun (x y : ℤ) ↦ x ≡ y [ZMOD 2]
 
 example : ¬ AntiSymmetric (· ∼ ·) := by
-  sorry
-
-end
-
+  dsimp[AntiSymmetric]
+  push_neg
+  use 0, 2
+  constructor
+  · use -1
+    numbers
+  · constructor
+    · use 1
+      numbers
+    · numbers
 
 section
 inductive Little
@@ -301,7 +312,11 @@ end
 
 
 example : Reflexive ((· : Set ℕ) ⊆ ·) := by
-  sorry
+  dsimp[Reflexive]
+  intro x
+  dsimp [Set.subset_def]
+  intro e h
+  apply h
 
 example : ¬ Reflexive ((· : Set ℕ) ⊆ ·) := by
   sorry
@@ -310,21 +325,42 @@ example : Symmetric ((· : Set ℕ) ⊆ ·) := by
   sorry
 
 example : ¬ Symmetric ((· : Set ℕ) ⊆ ·) := by
-  sorry
+  dsimp[Symmetric]
+  push_neg
+  use {x:ℕ | x > 1}, {x:ℕ | x > 0}
+  dsimp [Set.subset_def]
+  constructor
+  · intro x h
+    calc
+    x > 1 := by rel [h]
+    _ > 0 := by numbers
+  · push_neg
+    use 1
+    constructor <;> numbers
 
 example : AntiSymmetric ((· : Set ℕ) ⊆ ·) := by
-  sorry
+  dsimp[AntiSymmetric]
+  dsimp[Set.subset_def]
+  intro x y hxy hyx
+  ext z
+  constructor
+  intro hzx
+  apply hxy z hzx
+  apply hyx z
 
 example : ¬ AntiSymmetric ((· : Set ℕ) ⊆ ·) := by
   sorry
 
 example : Transitive ((· : Set ℕ) ⊆ ·) := by
-  sorry
+  dsimp[Transitive]
+  intro x y z hxy hyz a
+  intro hax
+  apply hxy at hax
+  apply hyz at hax
+  exact hax
 
 example : ¬ Transitive ((· : Set ℕ) ⊆ ·) := by
   sorry
-
-
 
 section
 local infix:50 "≺" => fun ((x1, y1) : ℝ × ℝ) (x2, y2) ↦ (x1 ≤ x2 ∧ y1 ≤ y2)

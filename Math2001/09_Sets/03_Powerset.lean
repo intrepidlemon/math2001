@@ -58,8 +58,6 @@ example : Injective q := by
   conv at hk => ring
   apply hk
 
-
-
 example : ¬ ∃ f : X → Set X, Surjective f := by
   intro h
   obtain ⟨f, hf⟩ := h
@@ -79,7 +77,19 @@ example : ¬ ∃ f : X → Set X, Surjective f := by
 def r (s : Set ℕ) : Set ℕ := s ∪ {3}
 
 example : ¬ Injective r := by
-  sorry
+  dsimp[Injective]
+  push_neg
+  use {3}, ∅
+  dsimp[r]
+  constructor
+  · ext
+    dsimp
+    exhaust
+  · ext
+    push_neg
+    use 3
+    dsimp
+    exhaust
 
 namespace Int
 
@@ -90,8 +100,37 @@ def U : ℕ → Set ℤ
 example (n : ℕ) : U n = {x : ℤ | (2:ℤ) ^ n ∣ x} := by
   simple_induction n with k hk
   · rw [U]
-    sorry
+    ext x
+    constructor
+    · dsimp
+      suffices 2^0 ∣ x by exhaust
+      use x
+      ring
+    · dsimp
+      suffices 2^0 ∣ x by exhaust
+      use x
+      ring
   · rw [U]
     ext x
     dsimp
-    sorry
+    constructor
+    · intro h
+      obtain ⟨y, ⟨hy1, hy2⟩⟩ := h
+      rw[hk] at hy1
+      obtain ⟨z, hz⟩ := hy1
+      use z
+      calc
+        x = 2 * y := by rw [hy2]
+        _ = 2 * (2 ^ k * z) := by rw [hz]
+        _ = 2 ^ (k + 1) * z := by ring
+    · intro h
+      obtain ⟨z, hz⟩ := h
+      use 2 ^ k * z
+      constructor
+      · rw[hk]
+        dsimp
+        use z
+        ring
+      · calc
+        x = 2 ^ (k + 1) * z := by rw[hz]
+        _ = 2 * (2 ^ k * z) := by ring
