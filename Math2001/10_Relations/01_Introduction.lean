@@ -366,7 +366,9 @@ section
 local infix:50 "≺" => fun ((x1, y1) : ℝ × ℝ) (x2, y2) ↦ (x1 ≤ x2 ∧ y1 ≤ y2)
 
 example : Reflexive (· ≺ ·) := by
-  sorry
+  dsimp[Reflexive]
+  intro x
+  constructor <;> apply le_refl
 
 example : ¬ Reflexive (· ≺ ·) := by
   sorry
@@ -375,16 +377,39 @@ example : Symmetric (· ≺ ·) := by
   sorry
 
 example : ¬ Symmetric (· ≺ ·) := by
-  sorry
+  dsimp[Symmetric]
+  push_neg
+  use (0, 0), (1, 1)
+  dsimp
+  constructor
+  · constructor <;> numbers
+  · left
+    numbers
 
 example : AntiSymmetric (· ≺ ·) := by
-  sorry
+  dsimp[AntiSymmetric]
+  intro ⟨x1, x2⟩  ⟨y1, y2⟩ ⟨hxy1, hxy2⟩ ⟨hyx1, hyx2⟩
+  dsimp at *
+  have h1: x1 = y1 := ge_antisymm hyx1 hxy1
+  have h2: x2 = y2 := ge_antisymm hyx2 hxy2
+  constructor
+  · apply h1
+  · apply h2
 
 example : ¬ AntiSymmetric (· ≺ ·) := by
   sorry
 
 example : Transitive (· ≺ ·) := by
-  sorry
+  dsimp[Transitive]
+  intro ⟨x1, x2⟩  ⟨y1, y2⟩ ⟨z1, z2⟩ ⟨hxy1, hxy2⟩ ⟨hyz1, hyz2⟩
+  dsimp at *
+  constructor
+  · calc
+      x1 ≤ y1 := by rel [hxy1]
+      _ ≤ z1 := by rel [hyz1]
+  · calc
+      x2 ≤ y2 := by rel [hxy2]
+      _ ≤ z2 := by rel [hyz2]
 
 example : ¬ Transitive (· ≺ ·) := by
   sorry
